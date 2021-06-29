@@ -11,5 +11,5 @@ RUN chmod +x /mysql-setup.sh \
     && /etc/init.d/mysql start \
     && /mysql-setup.sh
 
-RUN docker run –rm -p 8080:80
+docker run –rm -p 8080:80
 
