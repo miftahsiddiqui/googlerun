@@ -9,7 +9,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
   RUN_REGION: us-central1
-  SERVICE_NAME: Hello Google
+  APP_ID: grun
 
 jobs:
   setup-build-deploy:
@@ -29,16 +29,8 @@ jobs:
 
     # Build and push image to Google Container Registry
     - name: Build
-      run: |-
-        gcloud builds submit \
-          --quiet \
-          --tag gcr.io/$PROJECT_ID/$SERVICE_NAME/latest
+      run: gcloud builds submit --tag gcr.io/$PROJECT_ID/$APP_ID:$GITHUB_SHA
+      
     # Deploy image to Cloud Run
     - name: Deploy
-      run: |-
-        gcloud run deploy "$SERVICE_NAME" \
-          --quiet \
-          --region "$RUN_REGION" \
-          --image gcr.io/$PROJECT_ID/$SERVICE_NAME/newimage \
-          --platform "managed" \
-          --allow-unauthenticated
+      run: gcloud run deploy $APP_ID --image gcr.io/$PROJECT_ID/$APP_ID:$GITHUB_SHA --platform managed --region $RUN_REGION --allow-unauthenticated
